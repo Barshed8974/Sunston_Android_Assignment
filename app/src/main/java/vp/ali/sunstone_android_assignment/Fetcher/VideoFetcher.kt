@@ -1,4 +1,4 @@
-package vp.ali.sunstone_android_assignment.Fetcher
+package vp.ali.sunstone_android_assignment.fetcher
 
 import android.content.ContentUris
 import android.content.Context
@@ -6,14 +6,17 @@ import android.content.CursorLoader
 import android.net.Uri
 import android.provider.MediaStore
 
-class VideoFetcher (val context: Context){
-    fun fetchall():ArrayList<Uri>{
-        val fields= arrayOf(
-            MediaStore.Video.Media._ID
-        )
-        val listVideo=ArrayList<Uri>()
+class VideoFetcher(val context: Context) {
 
-        val curLoader= CursorLoader(
+
+    fun fetchAllVideo(): ArrayList<Uri> {
+        val fields = arrayOf(
+            MediaStore.Video.Media._ID,
+            MediaStore.Video.Media.DATA
+        )
+        val listSms = ArrayList<Uri>()
+
+        val curLoader = CursorLoader(
             context,
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
             fields,
@@ -21,17 +24,19 @@ class VideoFetcher (val context: Context){
             null,
             null
         )
-        val cursor=curLoader.loadInBackground()
-        if(cursor.moveToFirst())
-        {
+        val cursor = curLoader.loadInBackground()
+        if (cursor.moveToFirst()) {
             do {
-                val txt= ContentUris.withAppendedId(
-                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI,cursor.getLong(
-                    cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
-                ))
-                listVideo.add(txt)
-            }while (cursor.moveToNext())
+                val txt = ContentUris.withAppendedId(
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cursor.getLong(
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+                    )
+                )
+                if (txt != null) {
+                    listSms.add(txt)
+                }
+            } while (cursor.moveToNext())
         }
-        return listVideo
+        return listSms
     }
 }
