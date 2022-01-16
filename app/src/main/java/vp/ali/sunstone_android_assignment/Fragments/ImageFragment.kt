@@ -1,5 +1,6 @@
 package vp.ali.sunstone_android_assignment.Fragments
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,10 +11,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.fragment_image.*
 import vp.ali.sunstone_android_assignment.Fetcher.ImageFetcher
 import vp.ali.sunstone_android_assignment.Adapter.ImageAdapter
+import vp.ali.sunstone_android_assignment.ClickListener
 import vp.ali.sunstone_android_assignment.R
+import vp.ali.sunstone_android_assignment.showActivities.ShowImage
 
 
-class ImageFragment : Fragment() {
+class ImageFragment : Fragment(),ClickListener {
     var al=ArrayList<Uri>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,7 +36,13 @@ class ImageFragment : Fragment() {
         val contentFetcher= ImageFetcher(requireContext())
         al=contentFetcher.fetchall()
         recyclerImage.adapter= this.context?.let {
-            ImageAdapter(contentFetcher.fetchall(), it) }
+            ImageAdapter(contentFetcher.fetchall(), it,this) }
         recyclerImage.layoutManager=GridLayoutManager(this.context,3)
+    }
+
+    override fun onClick(uri: Uri) {
+        val intent= Intent(this.context, ShowImage::class.java)
+        intent.putExtra("key",uri.toString())
+        startActivity(intent)
     }
 }

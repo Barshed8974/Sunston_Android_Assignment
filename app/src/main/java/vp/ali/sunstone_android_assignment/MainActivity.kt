@@ -1,7 +1,9 @@
 package vp.ali.sunstone_android_assignment
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -10,7 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 import vp.ali.sunstone_android_assignment.Adapter.MyPagerAdapter
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
     private val READ_STORAGE = 101
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
