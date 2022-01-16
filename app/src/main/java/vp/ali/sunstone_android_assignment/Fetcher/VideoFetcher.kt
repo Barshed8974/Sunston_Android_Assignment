@@ -8,35 +8,38 @@ import android.provider.MediaStore
 
 class VideoFetcher(val context: Context) {
 
-
+    //required fields to access
     fun fetchAllVideo(): ArrayList<Uri> {
-        val fields = arrayOf(
-            MediaStore.Video.Media._ID,
-            MediaStore.Video.Media.DATA
-        )
-        val listSms = ArrayList<Uri>()
 
-        val curLoader = CursorLoader(
-            context,
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            fields,
-            null,
-            null,
-            null
-        )
-        val cursor = curLoader.loadInBackground()
-        if (cursor.moveToFirst()) {
-            do {
-                val txt = ContentUris.withAppendedId(
-                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cursor.getLong(
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+            val fields = arrayOf(
+                MediaStore.Video.Media._ID,
+                MediaStore.Video.Media.DATA
+            )
+
+            //list for storing Image uri
+            val videoUriList = ArrayList<Uri>()
+
+            val curLoader = CursorLoader(
+                context,
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                fields,
+                null,
+                null,
+                null
+            )
+            val cursor = curLoader.loadInBackground()
+            if (cursor.moveToFirst()) {
+                do {
+                    val videoUri = ContentUris.withAppendedId(
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI, cursor.getLong(
+                            cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)
+                        )
                     )
-                )
-                if (txt != null) {
-                    listSms.add(txt)
-                }
-            } while (cursor.moveToNext())
-        }
-        return listSms
+                    if (videoUri != null) {
+                        videoUriList.add(videoUri)
+                    }
+                } while (cursor.moveToNext())
+            }
+            return videoUriList
     }
 }

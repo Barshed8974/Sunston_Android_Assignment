@@ -11,6 +11,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.image_item.view.*
 import vp.ali.sunstone_android_assignment.ClickListener
 import vp.ali.sunstone_android_assignment.R
+
+
 class VideoAdapter(val list: List<Uri>, val context: Context,val clickListener: ClickListener) :
     RecyclerView.Adapter<VideoAdapter.VideoHolder>() {
 
@@ -20,13 +22,16 @@ class VideoAdapter(val list: List<Uri>, val context: Context,val clickListener: 
         return VideoHolder(view,clickListener)
     }
 
+
     override fun onBindViewHolder(holder: VideoHolder, position: Int) {
         holder.setVideo(list[position])
     }
 
+
     override fun getItemCount(): Int {
         return list.size
     }
+
 
     class VideoHolder(itemView: View,val clickListener: ClickListener) : RecyclerView.ViewHolder(itemView) {
         fun setVideo(uri: Uri) {

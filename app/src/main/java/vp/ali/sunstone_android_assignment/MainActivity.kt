@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity(){
         askPermission();
     }
 
+    //requesting for permission
     private fun askPermission() {
         ActivityCompat.requestPermissions(
             this,
@@ -28,6 +29,8 @@ class MainActivity : AppCompatActivity(){
         )
     }
 
+
+    //setting viewpager adapter
     private fun setAdapter() {
         val myPagerAdapter= MyPagerAdapter(supportFragmentManager,this.lifecycle)
         VPfragmentHolder.adapter=myPagerAdapter
@@ -52,7 +55,6 @@ class MainActivity : AppCompatActivity(){
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && requestCode == 101) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
                 setAdapter()
             }
             else  {

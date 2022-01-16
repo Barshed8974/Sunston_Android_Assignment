@@ -11,6 +11,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.image_item.view.*
 import vp.ali.sunstone_android_assignment.ClickListener
 import vp.ali.sunstone_android_assignment.R
+
+
 class ImageAdapter(val list: List<Uri>, val context: Context,val clickListener: ClickListener) :
     RecyclerView.Adapter<ImageAdapter.ImageHolder>() {
 

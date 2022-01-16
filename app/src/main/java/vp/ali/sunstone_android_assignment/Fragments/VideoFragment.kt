@@ -15,8 +15,10 @@ import vp.ali.sunstone_android_assignment.R
 import vp.ali.sunstone_android_assignment.showActivities.ShowVideo
 import vp.ali.sunstone_android_assignment.fetcher.VideoFetcher
 
-class VideoFragment : Fragment(),ClickListener {
-    var al = ArrayList<Uri>()
+class VideoFragment : Fragment(), ClickListener {
+
+
+    var videoUriList = ArrayList<Uri>()  //this list is use to store videos from content provider
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,23 +28,27 @@ class VideoFragment : Fragment(),ClickListener {
         return inflater.inflate(R.layout.fragment_video, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         getVideos()
     }
 
+    //this method is for get the videos uri from VideoFetcher class
     private fun getVideos() {
         val contentFetcher = VideoFetcher(requireContext())
-        al = contentFetcher.fetchAllVideo()
+        videoUriList = contentFetcher.fetchAllVideo()
         videoRecycler.adapter = this.context?.let {
-            VideoAdapter(contentFetcher.fetchAllVideo(), it,this)
+            VideoAdapter(contentFetcher.fetchAllVideo(), it, this)
         }
         videoRecycler.layoutManager = GridLayoutManager(this.context, 3)
     }
 
+
+    //method from ClickListener interface
     override fun onClick(uri: Uri) {
-        val intent= Intent(this.context, ShowVideo::class.java)
-        intent.putExtra("key",uri.toString())
+        val intent = Intent(this.context, ShowVideo::class.java)
+        intent.putExtra("key", uri.toString())
         startActivity(intent)
     }
 }

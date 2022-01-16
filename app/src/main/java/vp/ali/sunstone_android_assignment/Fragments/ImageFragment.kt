@@ -16,8 +16,10 @@ import vp.ali.sunstone_android_assignment.R
 import vp.ali.sunstone_android_assignment.showActivities.ShowImage
 
 
-class ImageFragment : Fragment(),ClickListener {
-    var al=ArrayList<Uri>()
+class ImageFragment : Fragment(), ClickListener {
+
+    var imageUriList = ArrayList<Uri>()      //this list is use to store videos from content provider
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,21 +30,24 @@ class ImageFragment : Fragment(),ClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getVideos()
+        getImage()
     }
 
 
-    private fun getVideos() {
-        val contentFetcher= ImageFetcher(requireContext())
-        al=contentFetcher.fetchall()
-        recyclerImage.adapter= this.context?.let {
-            ImageAdapter(contentFetcher.fetchall(), it,this) }
-        recyclerImage.layoutManager=GridLayoutManager(this.context,3)
+    //this method is for get the images uri from ImageFetcher class
+    private fun getImage() {
+        val contentFetcher = ImageFetcher(requireContext())
+        imageUriList = contentFetcher.fetchall()
+        recyclerImage.adapter = this.context?.let {
+            ImageAdapter(contentFetcher.fetchall(), it, this)
+        }
+        recyclerImage.layoutManager = GridLayoutManager(this.context, 3)
     }
 
+    //method from ClickListener interface
     override fun onClick(uri: Uri) {
-        val intent= Intent(this.context, ShowImage::class.java)
-        intent.putExtra("key",uri.toString())
+        val intent = Intent(this.context, ShowImage::class.java)
+        intent.putExtra("key", uri.toString())
         startActivity(intent)
     }
 }
