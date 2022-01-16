@@ -6,45 +6,69 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 import vp.ali.sunstone_android_assignment.Adapter.MyPagerAdapter
 
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(),EasyPermissions.PermissionCallbacks{
     private val READ_STORAGE = 101
+    private val permissions=ArrayList<String>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        askPermission();
+        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        setAdapter()
     }
 
-    //requesting for permission
-    private fun askPermission() {
-        ActivityCompat.requestPermissions(
+    override fun onRestart() {
+        super.onRestart()
+        setAdapter()
+    }
+
+    //checking for permission
+    private fun isPermissionGranted() =
+        EasyPermissions.hasPermissions(
             this,
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            READ_STORAGE
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+
+    //requesting for permission
+    private fun requestStoragePermission()
+    {
+        EasyPermissions.requestPermissions(
+            this,
+            "this application require storage permission ",
+            READ_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
         )
     }
 
-
     //setting viewpager adapter
     private fun setAdapter() {
-        val myPagerAdapter= MyPagerAdapter(supportFragmentManager,this.lifecycle)
-        VPfragmentHolder.adapter=myPagerAdapter
-        TabLayoutMediator(tab, VPfragmentHolder) { tab, position ->
-            when (position) {
-                0 -> {
-                    tab.text = " Video "
+        if (isPermissionGranted())
+        {
+            val myPagerAdapter= MyPagerAdapter(supportFragmentManager,this.lifecycle)
+            VPfragmentHolder.adapter=myPagerAdapter
+            TabLayoutMediator(tab, VPfragmentHolder) { tab, position ->
+                when (position) {
+                    0 -> {
+                        tab.text = " Video "
+                    }
+                    1 -> {
+                        tab.text = "Image"
+                    }
                 }
-                1 -> {
-                    tab.text = "Image"
-                }
-            }
 
-        }.attach()
+            }.attach()
+        }
+        else
+            requestStoragePermission()
     }
 
     override fun onRequestPermissionsResult(
@@ -53,14 +77,17 @@ class MainActivity : AppCompatActivity(){
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (grantResults.isNotEmpty() && requestCode == 101) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setAdapter()
-            }
-            else  {
-                Toast.makeText(this, "Permission denied", Toast.LENGTH_LONG).show()
-                askPermission()
-            }
-        }
+        EasyPermissions.onRequestPermissionsResult(READ_STORAGE,permissions,grantResults,this)
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        setAdapter()
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (EasyPermissions.permissionPermanentlyDenied(this,Manifest.permission.READ_EXTERNAL_STORAGE))
+            AppSettingsDialog.Builder(this).build().show()
+        else
+            requestStoragePermission()
     }
 }
