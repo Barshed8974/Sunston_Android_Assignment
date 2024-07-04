@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity(),EasyPermissions.PermissionCallbacks{
         )
 
     //requesting for permission
+
     private fun requestStoragePermission()
     {
         EasyPermissions.requestPermissions(
